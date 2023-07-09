@@ -1,27 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authService from './authService'
 
-const userDefaultState = {
-  _id: null,
-  firstname: null,
-  lastname: null,
-  email: null,
-  mobile: null,
-  token: null,
-}
-
-const initialState = {
-  user: userDefaultState,
-  orders: [],
-  isError: false,
-  isLoading: false,
-  isSuccess: false,
-  message: '',
-}
+const getUserFromLocalStorage = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
 
 // Hàm bất đồng bộ. Tạo action cho login bằng createAsyncThunk
 export const login = createAsyncThunk(
-  'auth/admin-login',
+  'auth/admin-login', // action name
   async (userData, thunkAPI) => {
     try {
       return await authService.login(userData)
@@ -32,12 +16,21 @@ export const login = createAsyncThunk(
   }
 )
 
+const initialState = {
+  user: getUserFromLocalStorage,
+  orders: [],
+  isError: false,
+  isLoading: false,
+  isSuccess: false,
+  message: '',
+}
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: initialState,
   reducers: {},
-  extraReducers: (buildeer) => {
-    buildeer
+  extraReducers: (builder) => {
+    builder
       .addCase(login.pending, (state) => {
         state.isLoading = true
       })

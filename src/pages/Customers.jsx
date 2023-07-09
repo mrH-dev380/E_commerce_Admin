@@ -1,17 +1,10 @@
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+
 import { Table } from 'antd'
-const data1 = []
-for (let i = 0; i < 46; i++) {
-  data1.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: Number(`${i}`),
-    status: `London, Park Lane no. ${i}`,
-  })
-}
+import { getAllUser } from '../features/customers/customerSlice'
+
 const Customers = () => {
-  const handleChange = (pagination, sorter) => {
-    console.log('Various parameters', pagination, sorter)
-  }
   const columns = [
     {
       title: 'No',
@@ -22,21 +15,39 @@ const Customers = () => {
       dataIndex: 'name',
     },
     {
-      title: 'Product',
-      dataIndex: 'product',
-      key: 'product',
-      sorter: (a, b) => a.product - b.product,
+      title: 'Email',
+      dataIndex: 'email',
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
+      title: 'Mobile',
+      dataIndex: 'mobile',
     },
   ]
+
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getAllUser())
+    console.log('dispatch reload')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  console.log('customer reload')
+  const customers = useSelector((state) => state.customer.customers)
+  const customersData = []
+  customers.map((customer, index) => {
+    if (customer.role !== 'admin') {
+      customersData.push({
+        key: index + 1,
+        name: `${customer.lastname} ${customer.firstname}`,
+        email: customer.email,
+        mobile: customer.mobile,
+      })
+    }
+  })
   return (
     <>
       <h3 className="mb-4 title">Customers</h3>
       <div>
-        <Table columns={columns} dataSource={data1} onChange={handleChange} />
+        <Table columns={columns} dataSource={customersData} />
       </div>
     </>
   )

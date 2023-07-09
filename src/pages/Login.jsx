@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -26,7 +27,6 @@ const Login = () => {
     }),
     onSubmit: (values) => {
       dispatch(login(values))
-      alert(JSON.stringify(values, null, 2))
     },
   })
 
@@ -36,9 +36,10 @@ const Login = () => {
   useEffect(() => {
     if (user && isSuccess) {
       navigate('admin')
+    } else {
+      navigate('')
     }
   }, [user, isLoading, isError, isSuccess, message])
-  console.log(user)
   return (
     <section className="login-wrapper">
       <div
@@ -48,6 +49,9 @@ const Login = () => {
         <div className="my-5 w-25 bg-white rounded-3 mx-auto p-4">
           <h3 className="text-center title">Login</h3>
           <p className="text-center">Login to your account to continue.</p>
+          <div className="error text-center">
+            {message.message == 'Rejected' ? 'You are not an Admin' : ''}
+          </div>
           <form action="" onSubmit={formik.handleSubmit}>
             <CustomInput
               type="text"

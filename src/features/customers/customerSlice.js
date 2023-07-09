@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import productService from './productService'
+import customerService from './customerService'
 
-export const getAllProduct = createAsyncThunk(
-  'product/get-all-product',
+// Hàm bất đồng bộ. Tạo action cho getUsers bằng createAsyncThunk
+export const getAllUser = createAsyncThunk(
+  'customer/get-customers', // action name
   async (thunkAPI) => {
     try {
-      return await productService.getAllProduct()
+      return await customerService.getAllUser()
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
@@ -13,29 +14,29 @@ export const getAllProduct = createAsyncThunk(
 )
 
 const initialState = {
-  products: [],
+  customers: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
   message: '',
 }
 
-const productSlice = createSlice({
-  name: 'product',
+const customerSlice = createSlice({
+  name: 'user',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getAllProduct.pending, (state) => {
+      .addCase(getAllUser.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(getAllProduct.fulfilled, (state, action) => {
+      .addCase(getAllUser.fulfilled, (state, action) => {
         state.isLoading = false
         state.isError = false
         state.isSuccess = true
-        state.products = action.payload
+        state.customers = action.payload
       })
-      .addCase(getAllProduct.rejected, (state, action) => {
+      .addCase(getAllUser.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.isSuccess = false
@@ -44,4 +45,4 @@ const productSlice = createSlice({
   },
 })
 
-export default productSlice.reducer
+export default customerSlice.reducer
