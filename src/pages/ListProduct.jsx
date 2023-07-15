@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Table } from 'antd'
 import { Link } from 'react-router-dom'
 
-import { getAllProduct } from '~/features/product/productSlice'
+import { getAllProduct, resetState } from '~/features/product/productSlice'
 
 const ListProduct = () => {
   const columns = [
@@ -16,18 +16,22 @@ const ListProduct = () => {
     {
       title: 'Title',
       dataIndex: 'title',
+      width: 360,
     },
     {
       title: 'Brand',
       dataIndex: 'brand',
+      width: 140,
     },
     {
       title: 'Category',
       dataIndex: 'category',
+      width: 140,
     },
     {
       title: 'Color',
       dataIndex: 'color',
+      width: 140,
     },
     {
       title: 'Quantity',
@@ -35,7 +39,7 @@ const ListProduct = () => {
       sorter: (a, b) => a.quantity - b.quantity,
     },
     {
-      title: 'Price',
+      title: 'Price $',
       dataIndex: 'price',
       sorter: (a, b) => a.price - b.price,
     },
@@ -47,6 +51,9 @@ const ListProduct = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getAllProduct())
+    return () => {
+      dispatch(resetState())
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -58,18 +65,18 @@ const ListProduct = () => {
       title: product.title,
       brand: product.brand,
       category: product.category,
-      color: product.color,
+      color: product.color.join(', '),
       quantity: product.quantity,
-      price: `$ ${product.price}`,
+      price: product.price,
       action: (
-        <>
+        <div className="d-flex">
           <Link to="/" className=" fs-3">
             <BiEdit />
           </Link>
-          <Link className="ms-3 fs-3" to="/">
+          <Link className="ms-3 fs-3" to="">
             <AiFillDelete />
           </Link>
-        </>
+        </div>
       ),
     })
   })

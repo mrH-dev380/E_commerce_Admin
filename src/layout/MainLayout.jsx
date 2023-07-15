@@ -10,6 +10,8 @@ import {
 import { Button, Layout, Menu, theme } from 'antd'
 import { useState } from 'react'
 const { Header, Sider, Content } = Layout
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // icons
 import {
@@ -87,7 +89,7 @@ const MainLayout = () => {
                 {
                   key: 'brand',
                   icon: <SiBrandfolder />,
-                  label: 'Brand',
+                  label: 'Add Brand',
                 },
                 {
                   key: 'list-brand',
@@ -97,7 +99,7 @@ const MainLayout = () => {
                 {
                   key: 'category',
                   icon: <BiCategoryAlt />,
-                  label: 'Category',
+                  label: 'Add Category',
                 },
                 {
                   key: 'list-category',
@@ -107,7 +109,7 @@ const MainLayout = () => {
                 {
                   key: 'color',
                   icon: <AiOutlineBgColors />,
-                  label: 'Color',
+                  label: 'Add Color',
                 },
                 {
                   key: 'list-color',
@@ -250,6 +252,17 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
+          <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            theme="light"
+          />
           <Outlet />
         </Content>
       </Layout>

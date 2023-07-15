@@ -108,6 +108,10 @@ body {
   justify-content: center;
 }
 
+.ant-table-cell:nth-child(2) {
+  width: 300px;
+}
+
 main {
   height: 85vh;
   overflow-y: scroll;

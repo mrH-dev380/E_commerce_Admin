@@ -27,10 +27,8 @@ const Customers = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getAllUser())
-    console.log('dispatch reload')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  console.log('customer reload')
   const customers = useSelector((state) => state.customer.customers)
   const customersData = []
   customers.map((customer, index) => {

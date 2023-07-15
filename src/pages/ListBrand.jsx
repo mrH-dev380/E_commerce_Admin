@@ -6,7 +6,7 @@ import { BiEdit } from 'react-icons/bi'
 import { AiFillDelete } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
-import { getAllBrand } from '../features/brand/brandSlice'
+import { getAllBrand } from '~/features/brand/brandSlice'
 
 const ListBrand = () => {
   const columns = [
@@ -27,13 +27,11 @@ const ListBrand = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getAllBrand())
-    console.log('dispatch brand action')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const brands = useSelector((state) => state.brand.brands)
   const brandData = []
-  console.log(brands)
   brands.map((brand, index) => {
     brandData.push({
       key: index + 1,

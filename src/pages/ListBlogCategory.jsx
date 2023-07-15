@@ -6,7 +6,9 @@ import { BiEdit } from 'react-icons/bi'
 import { AiFillDelete } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
-import { getAllCategory } from '~/features/blogCategory/blogCategorySlice'
+import {
+  getAllBlogCategory
+} from '~/features/blogCategory/blogCategorySlice'
 
 const ListBlogCategory = () => {
   const columns = [
@@ -26,17 +28,18 @@ const ListBlogCategory = () => {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getAllCategory())
+    dispatch(getAllBlogCategory())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const blogCategories = useSelector((state) => state.blogCategory.categories)
+  const blogCategories = useSelector(
+    (state) => state.blogCategory.blogCategories
+  )
   const blogCategoryData = []
-  console.log(blogCategories)
-  blogCategories.map((blogCategory, index) => {
+  blogCategories.map((brand, index) => {
     blogCategoryData.push({
       key: index + 1,
-      title: blogCategory.title,
+      title: brand.title,
       action: (
         <>
           <Link to="/" className=" fs-3">

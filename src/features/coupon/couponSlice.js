@@ -1,24 +1,24 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit'
-import blogCategoryService from './blogCategoryService'
+import couponService from './couponService'
 
 export const resetState = createAction('Reset_all')
 
-export const getAllBlogCategory = createAsyncThunk(
-  'blogCategory/get-all-category',
+export const getAllCoupon = createAsyncThunk(
+  'coupon/get-all-coupon',
   async (thunkAPI) => {
     try {
-      return await blogCategoryService.getAllBlogCategory()
+      return await couponService.getAllCoupon()
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
   }
 )
 
-export const createBlogCategory = createAsyncThunk(
-  'blogCategory/create-blog-category',
-  async (categoryData, thunkAPI) => {
+export const createCoupon = createAsyncThunk(
+  'coupon/create-coupon',
+  async (couponData, thunkAPI) => {
     try {
-      return await blogCategoryService.createBlogCategory(categoryData)
+      return await couponService.createCoupon(couponData)
     } catch (error) {
       return thunkAPI.rejectWithValue(error)
     }
@@ -26,44 +26,44 @@ export const createBlogCategory = createAsyncThunk(
 )
 
 const initialState = {
-  blogCategories: [],
+  coupons: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
   message: '',
 }
 
-const blogCategorySlice = createSlice({
-  name: 'blogCategory',
+const couponSlice = createSlice({
+  name: 'coupon',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getAllBlogCategory.pending, (state) => {
+      .addCase(getAllCoupon.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(getAllBlogCategory.fulfilled, (state, action) => {
+      .addCase(getAllCoupon.fulfilled, (state, action) => {
         state.isLoading = false
         state.isError = false
         state.isSuccess = true
-        state.blogCategories = action.payload
+        state.coupons = action.payload
       })
-      .addCase(getAllBlogCategory.rejected, (state, action) => {
+      .addCase(getAllCoupon.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.isSuccess = false
         state.message = action.error
       })
-      .addCase(createBlogCategory.pending, (state) => {
+      .addCase(createCoupon.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(createBlogCategory.fulfilled, (state, action) => {
+      .addCase(createCoupon.fulfilled, (state, action) => {
         state.isLoading = false
         state.isError = false
         state.isSuccess = true
-        state.blogCategories = [...state.blogCategories, action.payload]
+        state.newCouponAdded = action.payload
       })
-      .addCase(createBlogCategory.rejected, (state, action) => {
+      .addCase(createCoupon.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.isSuccess = false
@@ -73,4 +73,4 @@ const blogCategorySlice = createSlice({
   },
 })
 
-export default blogCategorySlice.reducer
+export default couponSlice.reducer
