@@ -50,7 +50,7 @@ const ListCoupon = () => {
       expiry: new Date(coupon.expiry).toLocaleString(),
       action: (
         <>
-          <Link to="/" className=" fs-3">
+          <Link to={`/admin/brand/${coupon._id}`} className=" fs-3">
             <BiEdit />
           </Link>
           <Link className="ms-3 fs-3" to="/">

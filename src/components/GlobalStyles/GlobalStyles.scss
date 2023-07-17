@@ -112,6 +112,16 @@ body {
   width: 300px;
 }
 
+// ant modal
+.ant-modal-footer {
+  display: flex;
+  justify-content: right;
+}
+
+.ant-modal-body {
+  height: 52px;
+}
+
 main {
   height: 85vh;
   overflow-y: scroll;

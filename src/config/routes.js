@@ -1,11 +1,17 @@
 const routes = {
   admin: '/admin',
   blog: '/admin/blog',
+  blogInfo: '/admin/blog/:id',
   blogCategory: '/admin/blog-category',
+  blogCategoryInfo: '/admin/blog-category/:id',
   brand: '/admin/brand',
+  brandInfo: '/admin/brand/:id',
   category: '/admin/category',
+  categoryInfo: '/admin/category/:id',
   color: '/admin/color',
+  colorInfo: '/admin/color/:id',
   coupon: '/admin/coupon',
+  couponInfo: '/admin/coupon/:id',
   customers: '/admin/customers',
   enquiries: '/admin/enquiries',
   listBlog: '/admin/list-blog',
@@ -17,6 +23,7 @@ const routes = {
   listProduct: '/admin/list-product',
   orders: '/admin/orders',
   product: '/admin/product',
+  productInfo: '/admin/product/:id',
 }
 
 export default routes

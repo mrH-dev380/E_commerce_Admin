@@ -24,11 +24,17 @@ import Orders from '~/pages/Orders'
 const publicRoutes = [
   { path: config.routes.admin, component: Dashboard },
   { path: config.routes.blog, component: AddBlog },
+  { path: config.routes.blogInfo, component: AddBlog },
   { path: config.routes.blogCategory, component: AddBlogCategory },
+  { path: config.routes.blogCategoryInfo, component: AddBlogCategory },
   { path: config.routes.brand, component: AddBrand },
+  { path: config.routes.brandInfo, component: AddBrand },
   { path: config.routes.category, component: AddCategory },
+  { path: config.routes.categoryInfo, component: AddCategory },
   { path: config.routes.color, component: AddColor },
+  { path: config.routes.colorInfo, component: AddColor },
   { path: config.routes.coupon, component: AddCoupon },
+  { path: config.routes.couponInfo, component: AddCoupon },
   { path: config.routes.customers, component: Customers },
   { path: config.routes.enquiries, component: Enquiries },
   { path: config.routes.listBlog, component: ListBlog },
@@ -40,6 +46,7 @@ const publicRoutes = [
   { path: config.routes.listProduct, component: ListProduct },
   { path: config.routes.orders, component: Orders },
   { path: config.routes.product, component: AddProduct },
+  { path: config.routes.productInfo, component: AddProduct },
 ]
 
 // Private Routes

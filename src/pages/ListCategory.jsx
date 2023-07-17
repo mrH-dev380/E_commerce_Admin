@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Table } from 'antd'
 import { Link } from 'react-router-dom'
 
-import { getAllCategory } from '~/features/productCategory/productCategorySlice'
+import {
+  getAllCategory,
+  resetState,
+} from '~/features/productCategory/productCategorySlice'
 
 const ListCategory = () => {
   const columns = [
@@ -25,6 +28,7 @@ const ListCategory = () => {
 
   const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(resetState())
     dispatch(getAllCategory())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
