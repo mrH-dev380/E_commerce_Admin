@@ -58,7 +58,6 @@ const AddBrand = () => {
       // await navigate(-1, 'list-product')
     },
   })
-  console.log(isSuccess, !!updateBrandName)
 
   useEffect(() => {
     if (isSuccess && !!newBandAdded) {
