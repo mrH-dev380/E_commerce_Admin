@@ -4,7 +4,8 @@ import * as Yup from 'yup'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useDispatch, useSelector } from 'react-redux'
-import React, { useState, useEffect, createRef } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useState, useEffect, createRef } from 'react'
 import Dropzone from 'react-dropzone'
 import { Select } from 'antd'
 import { toast } from 'react-toastify'
@@ -14,35 +15,60 @@ import { getAllBrand } from '~/features/brand/brandSlice'
 import { getAllCategory } from '~/features/productCategory/productCategorySlice'
 import { getAllColor } from '~/features/color/colorSlice'
 import { uploadImg, deleteImg } from '~/features/upload/uploadSlice'
-import { createProduct, resetState } from '~/features/product/productSlice'
+import {
+  getProductById,
+  createProduct,
+  updateProduct,
+  resetState,
+} from '~/features/product/productSlice'
 
 const AddProduct = () => {
   const dispatch = useDispatch()
   const [color, setColor] = useState([])
   const dropzoneRef = createRef()
+  const location = useLocation()
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    dispatch(getAllBrand())
-    dispatch(getAllCategory())
-    dispatch(getAllColor())
-  }, [])
+  const getProductId = location.pathname.split('/')[3]
+
+  // React quill
+  const toolbarOptions = [
+    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+    ['bold', 'italic', 'underline'], // toggled buttons
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ align: [] }],
+
+    [{ color: [] }], // dropdown with defaults from theme
+    ['video', 'image'],
+  ]
+  const module = {
+    toolbar: toolbarOptions,
+  }
 
   const newProduct = useSelector((state) => state.product)
-  const { isLoading, isSuccess, isError, newProductAdded } = newProduct
-  useEffect(() => {
-    console.log('succsec and product', isSuccess, !newProductAdded)
-    if (!newProductAdded && isSuccess) {
-      toast.success('Product Added Successfully!')
-    }
-    if (isError) {
-      toast.error('Something Went Wrong!')
-    }
-  }, [isLoading, isError])
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    productTitle,
+    productDescription,
+    productPrice,
+    productBrandName,
+    productCategoryName,
+    productTagsName,
+    productColor,
+    productQuantity,
+    productImages,
+    updateProductInfo,
+    newProductAdded,
+  } = newProduct
 
   const brands = useSelector((state) => state.brand.brands)
+
   const productCategory = useSelector(
     (state) => state.productCategory.categories
   )
+
   const colors = useSelector((state) => state.color.colors)
   const colorData = []
   colors.map((color) =>
@@ -58,6 +84,44 @@ const AddProduct = () => {
   images.map((image) => {
     imageData.push({ public_id: image.public_id, url: image.url })
   })
+  if (updateProductInfo) {
+    updateProductInfo.images.map((productImg) => {
+      imageData.push({ public_id: productImg.public_id, url: productImg.url })
+    })
+  } else if (productImages) {
+    productImages.map((productImg) => {
+      imageData.push({ public_id: productImg.public_id, url: productImg.url })
+    })
+  }
+
+  useEffect(() => {
+    dispatch(getAllBrand())
+    dispatch(getAllCategory())
+    dispatch(getAllColor())
+  }, [])
+
+  useEffect(() => {
+    if (getProductId !== undefined) {
+      dispatch(getProductById(getProductId))
+      formik.values.title = productTitle
+      formik.values.description = productDescription
+      formik.values.price = productPrice
+      formik.values.brand = productBrandName
+      formik.values.category = productCategoryName
+      formik.values.tags = productTagsName
+      formik.values.quantity = productQuantity
+      setColor(productColor)
+      formik.values.color = color
+    }
+  }, [
+    productTitle,
+    productDescription,
+    productPrice,
+    productBrandName,
+    productCategoryName,
+    productTagsName,
+    productQuantity,
+  ])
 
   useEffect(() => {
     formik.values.color = color ? color : ' '
@@ -89,24 +153,51 @@ const AddProduct = () => {
       quantity: Yup.string().required('Quantity is required'),
     }),
     onSubmit: async (values) => {
-      await dispatch(createProduct(values))
-      handleColors([])
-      formik.resetForm()
-      dispatch(resetState())
+      if (getProductId !== undefined) {
+        const data = { id: getProductId, productData: values }
+        dispatch(updateProduct(data))
+        navigate('/admin/list-product')
+        if (isSuccess && !!updateProductInfo) {
+          toast.success('Product Updated Successfully!')
+        }
+        if (isError) {
+          toast.success('Something Went Wrong!')
+        }
+      } else {
+        await dispatch(createProduct(values))
+        handleColors([])
+        formik.resetForm()
+        dispatch(resetState())
+      }
     },
   })
 
-  const toolbarOptions = [
-    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-    ['bold', 'italic', 'underline'], // toggled buttons
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    [{ align: [] }],
+  useEffect(() => {
+    if (!!newProductAdded && isSuccess) {
+      toast.success('Product Added Successfully!')
+    }
+    if (isError) {
+      toast.error('Something Went Wrong!')
+    }
+  }, [isLoading, isSuccess, isError])
 
-    [{ color: [] }], // dropdown with defaults from theme
-    ['video', 'image'],
-  ]
-  const module = {
-    toolbar: toolbarOptions,
+  const handleDeleteImage = async (id) => {
+    const newData = imageData.filter((image) => image.public_id !== id)
+    imageData = newData
+    const productData = {
+      title: formik.values.title,
+      description: formik.values.description,
+      price: formik.values.price,
+      brand: formik.values.brand,
+      category: formik.values.category,
+      tags: formik.values.tags,
+      color: formik.values.color,
+      quantity: formik.values.quantity,
+      images: newData,
+    }
+    const data = { id: getProductId, productData: productData }
+    await dispatch(updateProduct(data))
+    dispatch(deleteImg(id))
   }
 
   return (
@@ -272,12 +363,12 @@ const AddProduct = () => {
             </Dropzone>
           </div>
           <div className="show-images d-flex flex-wrap gap-3">
-            {images.map((image, index) => {
+            {imageData.map((image, index) => {
               return (
                 <div className=" position-relative" key={index}>
                   <button
                     type="button"
-                    onClick={() => dispatch(deleteImg(image.public_id))}
+                    onClick={() => handleDeleteImage(image.public_id)}
                     className="btn-close position-absolute"
                     style={{ top: '10px', right: '10px' }}
                   ></button>
@@ -292,12 +383,26 @@ const AddProduct = () => {
               )
             })}
           </div>
-          <button
-            className="btn btn-success border-0 rounded-3 my-5"
-            type="submit"
-          >
-            Add Product
-          </button>
+          <div className="d-flex ">
+            <button
+              className="btn btn-success border-0 rounded-3 my-5"
+              type="submit"
+            >
+              {getProductId ? 'Edit' : 'Add'} Product
+            </button>
+            {getProductId ? (
+              <button className="btn btn-danger border-0 rounded-3 my-5 ms-3">
+                <Link
+                  to="/admin/list-product"
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  Cancel
+                </Link>
+              </button>
+            ) : (
+              ''
+            )}
+          </div>
         </form>
       </div>
     </>

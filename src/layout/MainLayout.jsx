@@ -41,6 +41,12 @@ const MainLayout = () => {
     token: { colorBgContainer },
   } = theme.useToken()
   const navigate = useNavigate()
+
+  const handleSignout = () => {
+    localStorage.removeItem('user')
+    window.location.reload()
+  }
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -232,13 +238,13 @@ const MainLayout = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                  <div
                     className="dropdown-item py-1 mb-1"
                     style={{ height: 'auto', lineHeight: '24px' }}
-                    to="/admin"
+                    onClick={handleSignout}
                   >
                     Signout
-                  </Link>
+                  </div>
                 </li>
               </div>
             </div>

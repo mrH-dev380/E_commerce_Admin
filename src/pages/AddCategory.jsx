@@ -38,8 +38,7 @@ const AddCategory = () => {
       dispatch(resetState())
     }
   }, [categoryName])
-
-  console.log('categories', categoryName, !!categoryName)
+  
   const formik = useFormik({
     initialValues: {
       title: categoryName || '',

@@ -19,6 +19,7 @@ import ListColor from '~/pages/ListColor'
 import ListCoupon from '~/pages/ListCoupon'
 import ListProduct from '~/pages/ListProduct'
 import Orders from '~/pages/Orders'
+import ViewEnquiry from '~/pages/ViewEnquiry'
 
 // Public Routes
 const publicRoutes = [
@@ -36,6 +37,7 @@ const publicRoutes = [
   { path: config.routes.coupon, component: AddCoupon },
   { path: config.routes.couponInfo, component: AddCoupon },
   { path: config.routes.customers, component: Customers },
+  { path: config.routes.detailEnquiry, component: ViewEnquiry },
   { path: config.routes.enquiries, component: Enquiries },
   { path: config.routes.listBlog, component: ListBlog },
   { path: config.routes.listBlogCategory, component: ListBlogCategory },

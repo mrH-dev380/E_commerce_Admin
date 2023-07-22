@@ -35,7 +35,7 @@ const Login = () => {
   )
   useEffect(() => {
     if (user && isSuccess) {
-      navigate('admin')
+      window.location.reload()
     } else {
       navigate('')
     }

@@ -37,7 +37,6 @@ const AddBrand = () => {
     }
   }, [brandName])
 
-  console.log('brand', brandName, !!brandName)
   const formik = useFormik({
     initialValues: {
       title: brandName || '',
@@ -50,7 +49,6 @@ const AddBrand = () => {
       if (getBrandId !== undefined) {
         const data = { id: getBrandId, brandData: values }
         dispatch(updateBrand(data))
-        // navigate('/admin/list-brand')
       } else {
         dispatch(createBrand(values))
         dispatch(resetState())

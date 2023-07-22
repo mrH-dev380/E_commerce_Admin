@@ -13,6 +13,7 @@ const routes = {
   coupon: '/admin/coupon',
   couponInfo: '/admin/coupon/:id',
   customers: '/admin/customers',
+  detailEnquiry: '/admin/detail-enquiry/:id',
   enquiries: '/admin/enquiries',
   listBlog: '/admin/list-blog',
   listBlogCategory: '/admin/list-blog-category',

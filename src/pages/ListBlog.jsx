@@ -1,13 +1,26 @@
 import { BiEdit } from 'react-icons/bi'
 import { AiFillDelete } from 'react-icons/ai'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Table } from 'antd'
 import { Link } from 'react-router-dom'
 
-import { getAllBlog } from '~/features/blog/blogSlice'
+import CustomModal from '../components/CustomModal'
+import { getAllBlog, deleteBlog, resetState } from '~/features/blog/blogSlice'
 
 const ListBlog = () => {
+  const dispatch = useDispatch()
+  const [open, setOpen] = useState(false)
+  const [blogId, setBlogId] = useState('')
+
+  const showModal = (id) => {
+    setOpen(true)
+    setBlogId(id)
+  }
+  const hideModal = () => {
+    setOpen(false)
+  }
+
   const columns = [
     {
       title: 'No',
@@ -27,8 +40,8 @@ const ListBlog = () => {
     },
   ]
 
-  const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(resetState())
     dispatch(getAllBlog())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -42,22 +55,40 @@ const ListBlog = () => {
       category: blog.category,
       action: (
         <>
-          <Link to="/" className=" fs-3">
+          <Link to={`/admin/blog/${blog._id}`} className=" fs-3">
             <BiEdit />
           </Link>
-          <Link className="ms-3 fs-3" to="/">
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(blog._id)}
+          >
             <AiFillDelete />
-          </Link>
+          </button>
         </>
       ),
     })
   })
+
+  const deleteBlogById = async (id) => {
+    await dispatch(deleteBlog(id))
+    dispatch(getAllBlog())
+    setOpen(false)
+  }
+
   return (
     <>
       <h3 className="mb-4 title">List Blog</h3>
       <div>
         <Table columns={columns} dataSource={blogData} />
       </div>
+      <CustomModal
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          deleteBlogById(blogId)
+        }}
+        title="Are you sure you want to delete this blog?"
+      />
     </>
   )
 }

@@ -19,9 +19,19 @@ const getAllOrder = async () => {
   return response.data
 }
 
+const getOrder = async (id) => {
+  const response = await axios.get(
+    `${httpRequest}user/order/${id}`,
+    config.axios
+  )
+
+  return response.data
+}
+
 const authService = {
   login,
   getAllOrder,
+  getOrder,
 }
 
 export default authService
