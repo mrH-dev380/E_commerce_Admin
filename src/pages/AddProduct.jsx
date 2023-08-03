@@ -79,11 +79,16 @@ const AddProduct = () => {
     setColor(e)
   }
 
-  const images = useSelector((state) => state.upload.images)
+  const imageState = useSelector((state) => state.upload)
+  const { images, isUploaded, isDelete } = imageState
   let imageData = []
-  images.map((image) => {
-    imageData.push({ public_id: image.public_id, url: image.url })
-  })
+
+  if (isUploaded) {
+    images?.map((img) => {
+      imageData.push({ public_id: img.public_id, url: img.url })
+    })
+  }
+
   if (updateProductInfo) {
     updateProductInfo.images.map((productImg) => {
       imageData.push({ public_id: productImg.public_id, url: productImg.url })
@@ -92,8 +97,13 @@ const AddProduct = () => {
     productImages.map((productImg) => {
       imageData.push({ public_id: productImg.public_id, url: productImg.url })
     })
+  } else if (isDelete) {
+    images.map((img) => {
+      imageData.push({ public_id: img.public_id, url: img.url })
+    })
   }
 
+  console.log('imageData', imageData)
   useEffect(() => {
     dispatch(getAllBrand())
     dispatch(getAllCategory())
@@ -155,7 +165,7 @@ const AddProduct = () => {
     onSubmit: async (values) => {
       if (getProductId !== undefined) {
         const data = { id: getProductId, productData: values }
-        dispatch(updateProduct(data))
+        await dispatch(updateProduct(data))
         navigate('/admin/list-product')
         if (isSuccess && !!updateProductInfo) {
           toast.success('Product Updated Successfully!')
@@ -182,21 +192,24 @@ const AddProduct = () => {
   }, [isLoading, isSuccess, isError])
 
   const handleDeleteImage = async (id) => {
-    const newData = imageData.filter((image) => image.public_id !== id)
-    imageData = newData
-    const productData = {
-      title: formik.values.title,
-      description: formik.values.description,
-      price: formik.values.price,
-      brand: formik.values.brand,
-      category: formik.values.category,
-      tags: formik.values.tags,
-      color: formik.values.color,
-      quantity: formik.values.quantity,
-      images: newData,
+    if (getProductId !== undefined) {
+      const newData = imageData.filter((image) => image.public_id !== id)
+      imageData = newData
+      const productData = {
+        title: formik.values.title,
+        description: formik.values.description,
+        price: formik.values.price,
+        brand: formik.values.brand,
+        category: formik.values.category,
+        tags: formik.values.tags,
+        color: formik.values.color,
+        quantity: formik.values.quantity,
+        images: newData,
+      }
+      const data = { id: getProductId, productData: productData }
+      await dispatch(deleteImg(id))
+      dispatch(updateProduct(data))
     }
-    const data = { id: getProductId, productData: productData }
-    await dispatch(updateProduct(data))
     dispatch(deleteImg(id))
   }
 

@@ -1,4 +1,9 @@
-import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit'
+import {
+  createSlice,
+  createAsyncThunk,
+  createAction,
+  current,
+} from '@reduxjs/toolkit'
 import uploadService from './uploadService'
 
 export const resetState = createAction('Reset_all')
@@ -7,7 +12,6 @@ export const resetState = createAction('Reset_all')
 export const uploadImg = createAsyncThunk(
   'upload/images', // action name
   async (data, thunkAPI) => {
-    console.log(data)
     try {
       const formData = new FormData()
       data.map((img) => {
@@ -35,7 +39,7 @@ const initialState = {
   images: [],
   isError: false,
   isLoading: false,
-  isSuccess: false,
+  isUploaded: false,
   message: '',
 }
 
@@ -48,33 +52,40 @@ const uploadSlice = createSlice({
       // uploadImg
       .addCase(uploadImg.pending, (state) => {
         state.isLoading = true
+        state.isDelete = false
       })
       .addCase(uploadImg.fulfilled, (state, action) => {
         state.isError = false
         state.isLoading = false
-        state.isSuccess = true
-        state.images = action.payload
+        state.isUploaded = true
         state.message = 'success'
+        state.images = action.payload.concat(...state.images)
       })
       .addCase(uploadImg.rejected, (state, action) => {
         state.isError = true
-        state.isSuccess = false
+        state.isUploaded = false
         state.message = action.error
         state.isLoading = false
+        state.isUploaded = false
       })
       .addCase(deleteImg.pending, (state) => {
         state.isLoading = true
+        state.isUploaded = false
       })
-      .addCase(deleteImg.fulfilled, (state) => {
+      .addCase(deleteImg.fulfilled, (state, action) => {
         state.isLoading = false
         state.isError = false
-        state.isSuccess = true
-        state.images = []
+        state.isDelete = true
+        const imagesState = current(state.images)
+        const data = imagesState.filter(
+          (image) => image.public_id !== action.payload
+        )
+        state.images = data
       })
       .addCase(deleteImg.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
-        state.isSuccess = false
+        state.isDelete = false
         state.message = action.payload
       })
       .addCase(resetState, () => initialState)

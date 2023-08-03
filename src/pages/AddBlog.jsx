@@ -55,11 +55,15 @@ const AddBlog = () => {
   }
 
   // get images fom state
-  const images = useSelector((state) => state.upload.images)
+  const imageState = useSelector((state) => state.upload)
+  const { images, isUploaded, isDelete } = imageState
   let imageData = []
-  images.map((image) => {
-    imageData.push({ public_id: image.public_id, url: image.url })
-  })
+
+  if (isUploaded) {
+    images?.map((img) => {
+      imageData.push({ public_id: img.public_id, url: img.url })
+    })
+  }
   if (updateBlogInfo) {
     updateBlogInfo.images.map((blogImg) => {
       imageData.push({ public_id: blogImg.public_id, url: blogImg.url })
@@ -67,6 +71,10 @@ const AddBlog = () => {
   } else if (blogImages) {
     blogImages.map((blogImg) => {
       imageData.push({ public_id: blogImg.public_id, url: blogImg.url })
+    })
+  } else if (isDelete) {
+    images.map((img) => {
+      imageData.push({ public_id: img.public_id, url: img.url })
     })
   }
 
@@ -131,16 +139,19 @@ const AddBlog = () => {
   }, [isLoading, isSuccess, isError])
 
   const handleDeleteImage = async (id) => {
-    const newData = imageData.filter((image) => image.public_id !== id)
-    imageData = newData
-    const blogData = {
-      title: formik.values.title,
-      description: formik.values.description,
-      category: formik.values.category,
-      images: newData,
+    if (getBlogId !== undefined) {
+      const newData = imageData.filter((image) => image.public_id !== id)
+      imageData = newData
+      const blogData = {
+        title: formik.values.title,
+        description: formik.values.description,
+        category: formik.values.category,
+        images: newData,
+      }
+      const data = { id: getBlogId, blogData: blogData }
+      await dispatch(deleteImg(id))
+      dispatch(updateBlog(data))
     }
-    const data = { id: getBlogId, blogData: blogData }
-    await dispatch(updateBlog(data))
     dispatch(deleteImg(id))
   }
   return (

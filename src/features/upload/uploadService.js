@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { httpRequest } from '~/utils/httpRequest'
-import config from '~/config'
+import config from '../../config/'
 
 const uploadImg = async (data) => {
   const response = await axios.post(
