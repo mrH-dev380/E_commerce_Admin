@@ -14,12 +14,11 @@ import CustomInput from '~/components/CustomInput'
 import { getAllBrand } from '~/features/brand/brandSlice'
 import { getAllCategory } from '~/features/productCategory/productCategorySlice'
 import { getAllColor } from '~/features/color/colorSlice'
-import { uploadImg, deleteImg } from '~/features/upload/uploadSlice'
+import { uploadImg, deleteImg, resetImg } from '~/features/upload/uploadSlice'
 import {
   getProductById,
   createProduct,
   updateProduct,
-  resetState,
 } from '~/features/product/productSlice'
 
 const AddProduct = () => {
@@ -103,7 +102,6 @@ const AddProduct = () => {
     })
   }
 
-  console.log('imageData', imageData)
   useEffect(() => {
     dispatch(getAllBrand())
     dispatch(getAllCategory())
@@ -156,7 +154,6 @@ const AddProduct = () => {
       price: Yup.number().required('Price is required'),
       brand: Yup.string().required('Brand is required'),
       category: Yup.string().required('Category is required'),
-      tags: Yup.string().required('Tag is required'),
       color: Yup.array()
         .min(1, 'Pick at least one color')
         .required('Color is Required'),
@@ -177,7 +174,7 @@ const AddProduct = () => {
         await dispatch(createProduct(values))
         handleColors([])
         formik.resetForm()
-        dispatch(resetState())
+        dispatch(resetImg())
       }
     },
   })

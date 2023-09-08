@@ -11,11 +11,14 @@ import {
   deleteProduct,
   resetState,
 } from '~/features/product/productSlice'
+import { deleteImg } from '~/features/upload/uploadSlice'
+
 
 const ListProduct = () => {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
   const [productId, setProductId] = useState('')
+  const [productImage, setProductImage] = useState([])
 
   const showModal = (id) => {
     setOpen(true)
@@ -90,7 +93,10 @@ const ListProduct = () => {
           </Link>
           <button
             className="ms-3 fs-3 text-danger bg-transparent border-0"
-            onClick={() => showModal(product._id)}
+            onClick={() => {
+              showModal(product._id)
+              setProductImage(product.images)
+            }}
           >
             <AiFillDelete />
           </button>
@@ -116,6 +122,7 @@ const ListProduct = () => {
         open={open}
         performAction={() => {
           deleteProductById(productId)
+          productImage.map(image => dispatch(deleteImg(image.public_id)))
         }}
         title="Are you sure you want to delete this product?"
       />

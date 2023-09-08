@@ -40,6 +40,7 @@ export const updateCategory = createAsyncThunk(
   'productCategory/update-brand',
   async (categoryData, thunkAPI) => {
     try {
+      console.log(categoryData)
       return await productCategoryService.updateCategory(categoryData)
     } catch (error) {
       return thunkAPI.rejectWithValue(error)

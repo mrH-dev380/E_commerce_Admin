@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit'
 import uploadService from './uploadService'
 
-export const resetState = createAction('Reset_all')
+export const resetImg = createAction('Reset_Img')
 
 // Hàm bất đồng bộ. Tạo action cho login bằng createAsyncThunk
 export const uploadImg = createAsyncThunk(
@@ -88,7 +88,9 @@ const uploadSlice = createSlice({
         state.isDelete = false
         state.message = action.payload
       })
-      .addCase(resetState, () => initialState)
+      .addCase(resetImg, (state) => {
+        state.images = initialState.images
+      })
   },
 })
 
