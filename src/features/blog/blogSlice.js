@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit'
+import { toast } from 'react-toastify'
 import blogService from './blogService'
 
 export const resetState = createAction('Reset_all')
@@ -108,17 +109,24 @@ const blogSlice = createSlice({
       .addCase(createBlog.pending, (state) => {
         state.isLoading = true
       })
-      .addCase(createBlog.fulfilled, (state, action) => {
+      .addCase(createBlog.fulfilled, (state) => {
         state.isLoading = false
         state.isError = false
         state.isSuccess = true
-        state.newBlogAdded = action.payload
+        if (state.isSuccess) {
+          toast.success('Added Blog Successfully!')
+        }
       })
       .addCase(createBlog.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.isSuccess = false
         state.message = action.error
+        if (state.isError) {
+          if (state.isSuccess) {
+            toast.error('Something when wrong!')
+          }
+        }
       })
       .addCase(updateBlog.pending, (state) => {
         state.isLoading = true

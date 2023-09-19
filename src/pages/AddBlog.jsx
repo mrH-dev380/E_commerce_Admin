@@ -9,7 +9,7 @@ import Dropzone from 'react-dropzone'
 import { toast } from 'react-toastify'
 
 import CustomInput from '~/components/CustomInput'
-import { uploadImg, deleteImg } from '~/features/upload/uploadSlice'
+import { uploadImg, deleteImg, resetImg } from '~/features/upload/uploadSlice'
 import {
   getBlogById,
   createBlog,
@@ -29,15 +29,13 @@ const AddBlog = () => {
   const blogCategory = useSelector((state) => state.blogCategory.blogCategories)
   const newBlog = useSelector((state) => state.blog)
   const {
-    isLoading,
     isSuccess,
     isError,
     blogName,
     blogDescription,
     blogCategoryName,
     blogImages,
-    updateBlogInfo,
-    newBlogAdded,
+    updateBlogInfo
   } = newBlog
 
   // React quill
@@ -123,20 +121,10 @@ const AddBlog = () => {
       } else {
         await dispatch(createBlog(values))
         formik.resetForm()
-        dispatch(resetState())
+        dispatch(resetImg())
       }
-      // dispatch(resetState())
     },
   })
-
-  useEffect(() => {
-    if (isSuccess && !!newBlogAdded) {
-      toast.success('Blog Added Successfully!')
-    }
-    if (isError) {
-      toast.error('Something Went Wrong!')
-    }
-  }, [isLoading, isSuccess, isError])
 
   const handleDeleteImage = async (id) => {
     if (getBlogId !== undefined) {
